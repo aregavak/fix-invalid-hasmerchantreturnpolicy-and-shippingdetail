@@ -1,4 +1,4 @@
-آموزش رفع خطای “hasMerchantReturnPolicy” و “shippingDetails” 
+آموزش رفع خطای “hasMerchantReturnPolicy” و “shippingDetails”  
 
 اول توی فایل قالبتون یک فایل php به اسم rank-math.php بسزاید بعد این کد رو داخلش کپی کنید.
 این کد هم برای محصولات دانلودی هستش هم برای محصولات فیزیکی
