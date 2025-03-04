@@ -1,9 +1,6 @@
-آموزش رفع خطای “hasMerchantReturnPolicy” و “shippingDetails”  
+<?php
 
-اول توی فایل قالبتون یک فایل php به اسم rank-math.php بسزاید بعد این کد رو داخلش کپی کنید.
-این کد هم برای محصولات دانلودی هستش هم برای محصولات فیزیکی
-
-
+//Add your code here 
 
 add_filter('rank_math/snippet/rich_snippet_product_entity', function($entity) {
     // فقط توی صفحات تک‌محصول اجرا بشه
@@ -101,6 +98,3 @@ add_filter('rank_math/snippet/rich_snippet_product_entity', function($entity) {
 
     return $entity;
 });
-
-
-
