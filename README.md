@@ -1,16 +1,96 @@
-## Hi there 👋
+add_filter('rank_math/snippet/rich_snippet_product_entity', function($entity) {
+    // فقط توی صفحات تک‌محصول اجرا بشه
+    if (!is_product()) {
+        return $entity;
+    }
 
-<!--
-**aregavak/aregavak** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+    global $product;
 
-Here are some ideas to get you started:
+    // چک کردن وجود محصول
+    if (!$product || !is_a($product, 'WC_Product')) {
+        return $entity;
+    }
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+    // تنظیم پیش‌فرض برای offers اگه وجود نداشته باشه
+    if (!isset($entity['offers'])) {
+        $entity['offers'] = [];
+    }
+
+    if ($product->is_downloadable()) {
+        // محصولات دانلودی
+        $entity['offers']['shippingDetails'] = [
+            '@type' => 'OfferShippingDetails',
+            'shippingRate' => [
+                '@type' => 'MonetaryAmount',
+                'value' => 0,
+                'currency' => 'IRR'
+            ],
+            'shippingDestination' => [
+                '@type' => 'DefinedRegion',
+                'addressCountry' => 'IR'
+            ],
+            'deliveryTime' => [
+                '@type' => 'ShippingDeliveryTime',
+                'handlingTime' => [
+                    '@type' => 'QuantitativeValue',
+                    'minValue' => 0,
+                    'maxValue' => 0,
+                    'unitCode' => 'DAY' // تحویل فوری
+                ],
+                'transitTime' => [
+                    '@type' => 'QuantitativeValue',
+                    'minValue' => 0,
+                    'maxValue' => 0,
+                    'unitCode' => 'DAY'
+                ]
+            ]
+        ];
+
+        $entity['offers']['hasMerchantReturnPolicy'] = [
+            '@type' => 'MerchantReturnPolicy',
+            'applicableCountry' => 'IR',
+            'returnPolicyCategory' => 'https://schema.org/MerchantReturnNotPermitted',
+            'merchantReturnDays' => 0
+        ];
+    } else {
+        // محصولات فیزیکی
+        $entity['offers']['shippingDetails'] = [
+            '@type' => 'OfferShippingDetails',
+            'shippingRate' => [
+                '@type' => 'MonetaryAmount',
+                'value' => 50000, // قابل تغییر
+                'currency' => 'IRR'
+            ],
+            'shippingDestination' => [
+                '@type' => 'DefinedRegion',
+                'addressCountry' => 'IR'
+            ],
+            'deliveryTime' => [
+                '@type' => 'ShippingDeliveryTime',
+                'handlingTime' => [
+                    '@type' => 'QuantitativeValue',
+                    'minValue' => 1,
+                    'maxValue' => 2,
+                    'unitCode' => 'DAY'
+                ],
+                'transitTime' => [
+                    '@type' => 'QuantitativeValue',
+                    'minValue' => 1,
+                    'maxValue' => 5,
+                    'unitCode' => 'DAY'
+                ]
+            ]
+        ];
+
+        $entity['offers']['hasMerchantReturnPolicy'] = [
+            '@type' => 'MerchantReturnPolicy',
+            'applicableCountry' => 'IR',
+            'returnPolicyCategory' => 'https://schema.org/MerchantReturnFiniteReturnWindow',
+            'merchantReturnDays' => 7,
+            'returnMethod' => 'https://schema.org/ReturnByMail',
+            'returnFees' => 'https://schema.org/ReturnShippingFees'
+        ];
+    }
+
+    return $entity;
+});
